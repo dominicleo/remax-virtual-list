@@ -17,7 +17,7 @@ export const raf =
     : (callback: (time: number) => void) => {
         const NOW = now();
         const nextTime = Math.max(lastTime + 16, NOW);
-        return setTimeout(function() {
+        return setTimeout(() => {
           callback((lastTime = nextTime));
         }, nextTime - NOW);
       };
@@ -38,12 +38,12 @@ export function requestTimeout(callback: Function, delay: number): TimeoutID {
     if (now() - start >= delay) {
       callback.call(null);
     } else {
-      timeoutID.id = raf(tick);
+      timeoutID.id = raf(tick) as number;
     }
   }
 
   const timeoutID: TimeoutID = {
-    id: raf(tick),
+    id: raf(tick) as number,
   };
 
   return timeoutID;

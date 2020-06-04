@@ -1,16 +1,23 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "strict": true,
+    "outDir": "./lib",
     "target": "esnext",
     "module": "esnext",
     "lib": ["es2015", "dom"],
     "jsx": "preserve",
-    "declaration": true,
-    "outDir": "./lib",
-    "rootDir": "./src",
-    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "types": [],
-    "esModuleInterop": true
+    "rootDirs": ["./src", "./typings"],
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "noImplicitThis": false,
+    "experimentalDecorators": true,
+    "skipLibCheck": true
   },
   "include": ["./src"]
 }

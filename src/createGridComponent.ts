@@ -96,7 +96,7 @@ export type Props<T> = {
   onItemsRendered?: OnItemsRenderedCallback;
   onScroll?: OnScrollCallback;
   outerRef?: any;
-  outerElementType?: string | React.ReactElement<InnerProps, any>;
+  outerElementType?: string | React.ReactElement<OuterProps, any>;
   outerTagName?: string; // deprecated
   overscanColumnCount?: number;
   overscanColumnsCount?: number; // deprecated
