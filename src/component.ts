@@ -1,7 +1,9 @@
 import React from "react";
 import { View } from "remax/one";
 
-export const isNativePlatform = process.env.REMAX_PLATFORM !== "web";
+export const isNativePlatform = ["ali", "wechat", "toutiao"].includes(
+  process.env.REMAX_PLATFORM as string
+);
 
 export { View };
 

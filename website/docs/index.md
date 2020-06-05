@@ -1,3 +1,7 @@
+---
+title: 快速开始
+---
+
 # remax-virtual-list
 
 用于高效地呈现大型列表和表格数据
@@ -16,10 +20,10 @@ $ yarn add remax-virtual-list
 
 ### 使用
 
-```tsx
-import * as React from "react";
-import { View } from "remax/one";
-import { FixedSizeList } from "remax-virtual-list";
+```typescript
+import * as React from 'react';
+import { View } from 'remax/one';
+import { FixedSizeList } from 'remax-virtual-list';
 
 const Row = ({ index, style }) => <View style={style}>Row {index}</View>;
 
