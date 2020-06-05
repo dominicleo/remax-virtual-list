@@ -1,19 +1,20 @@
-import createGridComponent from './createGridComponent';
-
-import type { Props, ScrollToAlign } from './createGridComponent';
+import createGridComponent, {
+  Props,
+  ScrollToAlign,
+} from "./createGridComponent";
 
 const FixedSizeGrid = createGridComponent({
   getColumnOffset: ({ columnWidth }: Props<any>, index: number): number =>
     index * (columnWidth as number),
 
   getColumnWidth: ({ columnWidth }: Props<any>, index: number): number =>
-    (columnWidth as number),
+    columnWidth as number,
 
   getRowOffset: ({ rowHeight }: Props<any>, index: number): number =>
     index * (rowHeight as number),
 
   getRowHeight: ({ rowHeight }: Props<any>, index: number): number =>
-    (rowHeight as number),
+    rowHeight as number,
 
   getEstimatedTotalHeight: ({ rowCount, rowHeight }: Props<any>) =>
     (rowHeight as number) * rowCount,
@@ -45,20 +46,20 @@ const FixedSizeGrid = createGridComponent({
         (columnWidth as number)
     );
 
-    if (align === 'smart') {
+    if (align === "smart") {
       if (scrollLeft >= minOffset - width && scrollLeft <= maxOffset + width) {
-        align = 'auto';
+        align = "auto";
       } else {
-        align = 'center';
+        align = "center";
       }
     }
 
     switch (align) {
-      case 'start':
+      case "start":
         return maxOffset;
-      case 'end':
+      case "end":
         return minOffset;
-      case 'center':
+      case "center":
         // "Centered" offset is usually the average of the min and max.
         // But near the edges of the list, this doesn't hold true.
         const middleOffset = Math.round(
@@ -71,7 +72,7 @@ const FixedSizeGrid = createGridComponent({
         } else {
           return middleOffset;
         }
-      case 'auto':
+      case "auto":
       default:
         if (scrollLeft >= minOffset && scrollLeft <= maxOffset) {
           return scrollLeft;
@@ -99,10 +100,7 @@ const FixedSizeGrid = createGridComponent({
       0,
       rowCount * (rowHeight as number) - height
     );
-    const maxOffset = Math.min(
-      lastRowOffset,
-      rowIndex * (rowHeight as number)
-    );
+    const maxOffset = Math.min(lastRowOffset, rowIndex * (rowHeight as number));
     const minOffset = Math.max(
       0,
       rowIndex * (rowHeight as number) -
@@ -111,20 +109,20 @@ const FixedSizeGrid = createGridComponent({
         (rowHeight as number)
     );
 
-    if (align === 'smart') {
+    if (align === "smart") {
       if (scrollTop >= minOffset - height && scrollTop <= maxOffset + height) {
-        align = 'auto';
+        align = "auto";
       } else {
-        align = 'center';
+        align = "center";
       }
     }
 
     switch (align) {
-      case 'start':
+      case "start":
         return maxOffset;
-      case 'end':
+      case "end":
         return minOffset;
-      case 'center':
+      case "center":
         // "Centered" offset is usually the average of the min and max.
         // But near the edges of the list, this doesn't hold true.
         const middleOffset = Math.round(
@@ -137,7 +135,7 @@ const FixedSizeGrid = createGridComponent({
         } else {
           return middleOffset;
         }
-      case 'auto':
+      case "auto":
       default:
         if (scrollTop >= minOffset && scrollTop <= maxOffset) {
           return scrollTop;
@@ -217,23 +215,23 @@ const FixedSizeGrid = createGridComponent({
   shouldResetStyleCacheOnItemSizeChange: true,
 
   validateProps: ({ columnWidth, rowHeight }: Props<any>): void => {
-      // @ts-ignore
-    if (process.env.NODE_ENV !== 'production') {
-      if (typeof columnWidth !== 'number') {
+    // @ts-ignore
+    if (process.env.NODE_ENV !== "production") {
+      if (typeof columnWidth !== "number") {
         throw Error(
           'An invalid "columnWidth" prop has been specified. ' +
-            'Value should be a number. ' +
+            "Value should be a number. " +
             `"${
-              columnWidth === null ? 'null' : typeof columnWidth
+              columnWidth === null ? "null" : typeof columnWidth
             }" was specified.`
         );
       }
 
-      if (typeof rowHeight !== 'number') {
+      if (typeof rowHeight !== "number") {
         throw Error(
           'An invalid "rowHeight" prop has been specified. ' +
-            'Value should be a number. ' +
-            `"${rowHeight === null ? 'null' : typeof rowHeight}" was specified.`
+            "Value should be a number. " +
+            `"${rowHeight === null ? "null" : typeof rowHeight}" was specified.`
         );
       }
     }

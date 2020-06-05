@@ -1,7 +1,6 @@
 import memoizeOne from "memoize-one";
 import { createElement, PureComponent } from "react";
-import { View } from "remax/one";
-import Container from "./Container";
+import { ScrollView, View } from "./component";
 import { cancelTimeout, requestTimeout, TimeoutID } from "./utils/timer";
 import { getScrollbarSize, getRTLOffsetType } from "./utils/domHelpers";
 
@@ -445,7 +444,7 @@ export default function createGridComponent({
         this._instanceProps
       );
       return createElement(
-        (outerElementType || outerTagName || Container) as any,
+        (outerElementType || outerTagName || ScrollView) as any,
         {
           className,
           onScroll: this._onScroll,

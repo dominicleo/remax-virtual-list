@@ -1,43 +1,29 @@
 {
-  "name": "remax-virtual-list",
-  "version": "1.0.0",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "private": true,
+  "name": "dumi-app",
   "scripts": {
-    "build": "rimraf lib && tsc",
-    "release": "standard-version"
+    "start": "dumi dev",
+    "build": "dumi build",
+    "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\""
   },
-  "files": [
-    "lib",
-    "package.json",
-    "README.md"
-  ],
-  "repository": "git@github.com:dominicleo/remax-virtual-list.git",
-  "author": "dominicleo <dominicleo@mail.com>",
-  "license": "MIT",
-  "private": false,
-  "dependencies": {
-    "memoize-one": "^5.1.1"
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   },
-  "peerDependencies": {
-    "react": "^16.13.1",
-    "remax": "^2.3.0"
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^8.1.0",
-    "@types/react": "^16.9.2",
-    "husky": "^3.0.5",
-    "prettier": "^1.18.2",
-    "react": "^16.13.1",
-    "remax": "^2.3.0",
-    "rimraf": "^3.0.0",
-    "standard-version": "^7.0.0",
-    "typescript": "^3.6.3"
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
+    "dumi": "^1.0.8",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1",
+    "yorkie": "^2.0.0"
   }
 }

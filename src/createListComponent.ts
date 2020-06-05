@@ -1,7 +1,6 @@
 import memoizeOne from "memoize-one";
 import { createElement, PureComponent } from "react";
-import { View } from "remax/one";
-import Container from "./Container";
+import { ScrollView, View } from "./component";
 import { cancelTimeout, requestTimeout } from "./utils/timer";
 import { getRTLOffsetType } from "./utils/domHelpers";
 
@@ -334,7 +333,7 @@ export default function createListComponent({
       );
 
       return createElement(
-        (outerElementType || outerTagName || Container) as any,
+        (outerElementType || outerTagName || ScrollView) as any,
         {
           className,
           onScroll,
