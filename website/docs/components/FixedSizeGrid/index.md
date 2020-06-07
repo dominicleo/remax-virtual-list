@@ -34,11 +34,11 @@ export default () => (
   <FixedSizeGrid
     className="list"
     columnCount={1000}
-    columnWidth={200}
-    height={300}
+    columnWidth={100}
+    height={150}
     rowCount={1000}
-    rowHeight={70}
-    width={600}
+    rowHeight={35}
+    width={300}
   >
     {Cell}
   </FixedSizeGrid>
@@ -56,6 +56,7 @@ export default () => (
 | columnWidth | 网格中单个列的宽度                                                    |        number        | -      |
 | rowCount    | 网格中的行数                                                          |        number        | -      |
 | rowHeight   | 网格中单个行的高度                                                    |        number        | -      |
-| children    | 列表元素                                                              |     `ReactNode`      | -      |
+| children  | 列表元素                                                              |        ({key, rowIndex, columnIndex, data, isScrolling, style}) =>  ReactNode         | -        |
+
 
 [更多用法](https://react-window.now.sh/#/api/FixedSizeGrid)

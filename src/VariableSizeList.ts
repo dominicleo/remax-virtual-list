@@ -1,7 +1,4 @@
-import createListComponent, {
-  Props,
-  ScrollToAlign,
-} from "./createListComponent";
+import createListComponent, { Props, ScrollToAlign } from './createListComponent';
 
 const DEFAULT_ESTIMATED_ITEM_SIZE = 50;
 
@@ -25,7 +22,7 @@ type InstanceProps = {
 const getItemMetadata = (
   props: Props<any>,
   index: number,
-  instanceProps: InstanceProps
+  instanceProps: InstanceProps,
 ): ItemMetadata => {
   const { itemSize } = props as VariableSizeProps;
   const { itemMetadataMap, lastMeasuredIndex } = instanceProps;
@@ -38,7 +35,7 @@ const getItemMetadata = (
     }
 
     for (let i = lastMeasuredIndex + 1; i <= index; i++) {
-      let size = (itemSize as itemSizeGetter)(i);
+      const size = (itemSize as itemSizeGetter)(i);
 
       itemMetadataMap[i] = {
         offset,
@@ -54,11 +51,7 @@ const getItemMetadata = (
   return itemMetadataMap[index];
 };
 
-const findNearestItem = (
-  props: Props<any>,
-  instanceProps: InstanceProps,
-  offset: number
-) => {
+const findNearestItem = (props: Props<any>, instanceProps: InstanceProps, offset: number) => {
   const { itemMetadataMap, lastMeasuredIndex } = instanceProps;
 
   const lastMeasuredItemOffset =
@@ -66,13 +59,7 @@ const findNearestItem = (
 
   if (lastMeasuredItemOffset >= offset) {
     // If we've already measured items within this range just use a binary search as it's faster.
-    return findNearestItemBinarySearch(
-      props,
-      instanceProps,
-      lastMeasuredIndex,
-      0,
-      offset
-    );
+    return findNearestItemBinarySearch(props, instanceProps, lastMeasuredIndex, 0, offset);
   } else {
     // If we haven't yet measured this high, fallback to an exponential search with an inner binary search.
     // The exponential search avoids pre-computing sizes for the full set of items as a binary search would.
@@ -81,7 +68,7 @@ const findNearestItem = (
       props,
       instanceProps,
       Math.max(0, lastMeasuredIndex),
-      offset
+      offset,
     );
   }
 };
@@ -91,7 +78,7 @@ const findNearestItemBinarySearch = (
   instanceProps: InstanceProps,
   high: number,
   low: number,
-  offset: number
+  offset: number,
 ): number => {
   while (low <= high) {
     const middle = low + Math.floor((high - low) / 2);
@@ -117,15 +104,12 @@ const findNearestItemExponentialSearch = (
   props: Props<any>,
   instanceProps: InstanceProps,
   index: number,
-  offset: number
+  offset: number,
 ): number => {
   const { itemCount } = props;
   let interval = 1;
 
-  while (
-    index < itemCount &&
-    getItemMetadata(props, index, instanceProps).offset < offset
-  ) {
+  while (index < itemCount && getItemMetadata(props, index, instanceProps).offset < offset) {
     index += interval;
     interval *= 2;
   }
@@ -135,13 +119,13 @@ const findNearestItemExponentialSearch = (
     instanceProps,
     Math.min(index, itemCount - 1),
     Math.floor(index / 2),
-    offset
+    offset,
   );
 };
 
 const getEstimatedTotalSize = (
   { itemCount }: Props<any>,
-  { itemMetadataMap, estimatedItemSize, lastMeasuredIndex }: InstanceProps
+  { itemMetadataMap, estimatedItemSize, lastMeasuredIndex }: InstanceProps,
 ) => {
   let totalSizeOfMeasuredItems = 0;
 
@@ -163,17 +147,11 @@ const getEstimatedTotalSize = (
 };
 
 const VariableSizeList = createListComponent({
-  getItemOffset: (
-    props: Props<any>,
-    index: number,
-    instanceProps: InstanceProps
-  ): number => getItemMetadata(props, index, instanceProps).offset,
+  getItemOffset: (props: Props<any>, index: number, instanceProps: InstanceProps): number =>
+    getItemMetadata(props, index, instanceProps).offset,
 
-  getItemSize: (
-    props: Props<any>,
-    index: number,
-    instanceProps: InstanceProps
-  ): number => instanceProps.itemMetadataMap[index].size,
+  getItemSize: (props: Props<any>, index: number, instanceProps: InstanceProps): number =>
+    instanceProps.itemMetadataMap[index].size,
 
   getEstimatedTotalSize,
 
@@ -182,12 +160,11 @@ const VariableSizeList = createListComponent({
     index: number,
     align: ScrollToAlign,
     scrollOffset: number,
-    instanceProps: InstanceProps
+    instanceProps: InstanceProps,
   ): number => {
-    const { direction, height, layout, width } = props;
+    const { height, layout, width } = props;
 
-    // TODO Deprecate direction "horizontal"
-    const isHorizontal = direction === "horizontal" || layout === "horizontal";
+    const isHorizontal = layout === 'horizontal';
     const size = (isHorizontal ? width : height) as number;
     const itemMetadata = getItemMetadata(props, index, instanceProps);
 
@@ -195,34 +172,25 @@ const VariableSizeList = createListComponent({
     // To ensure it reflects actual measurements instead of just estimates.
     const estimatedTotalSize = getEstimatedTotalSize(props, instanceProps);
 
-    const maxOffset = Math.max(
-      0,
-      Math.min(estimatedTotalSize - size, itemMetadata.offset)
-    );
-    const minOffset = Math.max(
-      0,
-      itemMetadata.offset - size + itemMetadata.size
-    );
+    const maxOffset = Math.max(0, Math.min(estimatedTotalSize - size, itemMetadata.offset));
+    const minOffset = Math.max(0, itemMetadata.offset - size + itemMetadata.size);
 
-    if (align === "smart") {
-      if (
-        scrollOffset >= minOffset - size &&
-        scrollOffset <= maxOffset + size
-      ) {
-        align = "auto";
+    if (align === 'smart') {
+      if (scrollOffset >= minOffset - size && scrollOffset <= maxOffset + size) {
+        align = 'auto';
       } else {
-        align = "center";
+        align = 'center';
       }
     }
 
     switch (align) {
-      case "start":
+      case 'start':
         return maxOffset;
-      case "end":
+      case 'end':
         return minOffset;
-      case "center":
+      case 'center':
         return Math.round(minOffset + (maxOffset - minOffset) / 2);
-      case "auto":
+      case 'auto':
       default:
         if (scrollOffset >= minOffset && scrollOffset <= maxOffset) {
           return scrollOffset;
@@ -237,19 +205,18 @@ const VariableSizeList = createListComponent({
   getStartIndexForOffset: (
     props: Props<any>,
     offset: number,
-    instanceProps: InstanceProps
+    instanceProps: InstanceProps,
   ): number => findNearestItem(props, instanceProps, offset),
 
   getStopIndexForStartIndex: (
     props: Props<any>,
     startIndex: number,
     scrollOffset: number,
-    instanceProps: InstanceProps
+    instanceProps: InstanceProps,
   ): number => {
-    const { direction, height, itemCount, layout, width } = props;
+    const { height, itemCount, layout, width } = props;
 
-    // TODO Deprecate direction "horizontal"
-    const isHorizontal = direction === "horizontal" || layout === "horizontal";
+    const isHorizontal = layout === 'horizontal';
     const size = (isHorizontal ? width : height) as number;
     const itemMetadata = getItemMetadata(props, startIndex, instanceProps);
     const maxOffset = scrollOffset + size;
@@ -274,14 +241,8 @@ const VariableSizeList = createListComponent({
       lastMeasuredIndex: -1,
     };
 
-    instance.resetAfterIndex = (
-      index: number,
-      shouldForceUpdate: boolean = true
-    ) => {
-      instanceProps.lastMeasuredIndex = Math.min(
-        instanceProps.lastMeasuredIndex,
-        index - 1
-      );
+    instance.resetAfterIndex = (index: number, shouldForceUpdate = true) => {
+      instanceProps.lastMeasuredIndex = Math.min(instanceProps.lastMeasuredIndex, index - 1);
 
       // We could potentially optimize further by only evicting styles after this index,
       // But since styles are only cached while scrolling is in progress-
@@ -301,12 +262,12 @@ const VariableSizeList = createListComponent({
 
   validateProps: ({ itemSize }: Props<any>): void => {
     // @ts-ignore
-    if (process.env.NODE_ENV !== "production") {
-      if (typeof itemSize !== "function") {
+    if (process.env.NODE_ENV !== 'production') {
+      if (typeof itemSize !== 'function') {
         throw Error(
           'An invalid "itemSize" prop has been specified. ' +
-            "Value should be a function. " +
-            `"${itemSize === null ? "null" : typeof itemSize}" was specified.`
+            'Value should be a function. ' +
+            `"${itemSize === null ? 'null' : typeof itemSize}" was specified.`,
         );
       }
     }

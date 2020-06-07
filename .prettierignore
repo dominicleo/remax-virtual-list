@@ -1,0 +1,13 @@
+**/*.md
+**/*.svg
+**/*.html
+**/*.ejs
+package.json
+node_modules**/*.md
+**/*.svg
+**/*.html
+**/*.ejs
+package.json
+node_modules
+
+lib

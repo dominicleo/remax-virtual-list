@@ -15,7 +15,7 @@ import './index.less';
 
 const rowHeights = new Array(1000)
   .fill(true)
-  .map(() => 50 + Math.round(Math.random() * 50));
+  .map(() => 25 + Math.round(Math.random() * 50));
 
 const getItemSize = index => rowHeights[index];
 
@@ -28,10 +28,10 @@ const Row = ({ index, style }) => (
 export default () => (
   <VariableSizeList
     className="list"
-    height={300}
+    height={150}
     itemCount={1000}
     itemSize={getItemSize}
-    width={600}
+    width={300}
   >
     {Row}
   </VariableSizeList>
@@ -48,7 +48,7 @@ import './index.less';
 
 const columnWidths = new Array(1000)
   .fill(true)
-  .map(() => 150 + Math.round(Math.random() * 50));
+  .map(() => 75 + Math.round(Math.random() * 50));
 
 const getItemSize = index => columnWidths[index];
 
@@ -61,11 +61,11 @@ const Column = ({ index, style }) => (
 export default () => (
   <VariableSizeList
     className="list"
-    height={150}
+    height={75}
     itemCount={1000}
     itemSize={getItemSize}
     layout="horizontal"
-    width={600}
+    width={300}
   >
     {Column}
   </VariableSizeList>
@@ -82,6 +82,6 @@ export default () => (
 | itemCount | 列表中的项目总数                                                      |           number           | -        |
 | itemSize  | 列表元素的行高或列宽                                                  | (index: number) => number  | 50       |
 | layout    | 布局/方向                                                             | `vertical` \| `horizontal` | vertical |
-| children  | 列表元素                                                              |        `ReactNode`         | -        |
+| children  | 列表元素                                                              |        ({key, index, data, isScrolling, style}) =>  ReactNode         | -        |
 
 [更多用法](https://react-window.now.sh/#/api/VariableSizeList)

@@ -1,9 +1,7 @@
 const hasNativePerformanceNow =
-  typeof performance === "object" && typeof performance.now === "function";
+  typeof performance === 'object' && typeof performance.now === 'function';
 
-const now = hasNativePerformanceNow
-  ? () => performance.now()
-  : () => Date.now();
+const now = hasNativePerformanceNow ? () => performance.now() : () => Date.now();
 
 export type TimeoutID = {
   id: number;
@@ -12,7 +10,7 @@ export type TimeoutID = {
 let lastTime = 0;
 
 export const raf =
-  typeof requestAnimationFrame !== "undefined" && requestAnimationFrame !== null
+  typeof requestAnimationFrame !== 'undefined' && requestAnimationFrame !== null
     ? requestAnimationFrame
     : (callback: (time: number) => void) => {
         const NOW = now();
@@ -23,7 +21,7 @@ export const raf =
       };
 
 export const caf =
-  typeof cancelAnimationFrame !== "undefined" && cancelAnimationFrame !== null
+  typeof cancelAnimationFrame !== 'undefined' && cancelAnimationFrame !== null
     ? cancelAnimationFrame
     : clearTimeout;
 
@@ -31,7 +29,7 @@ export function cancelTimeout(timeoutID: TimeoutID) {
   caf(timeoutID.id);
 }
 
-export function requestTimeout(callback: Function, delay: number): TimeoutID {
+export function requestTimeout(callback: () => any, delay: number): TimeoutID {
   const start = now();
 
   function tick() {

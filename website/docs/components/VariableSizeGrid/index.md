@@ -15,10 +15,10 @@ import './index.less';
 
 const columnWidths = new Array(1000)
   .fill(true)
-  .map(() => 150 + Math.round(Math.random() * 50));
+  .map(() => 75 + Math.round(Math.random() * 50));
 const rowHeights = new Array(1000)
   .fill(true)
-  .map(() => 50 + Math.round(Math.random() * 50));
+  .map(() => 25 + Math.round(Math.random() * 50));
 
 const getItemSize = index => rowHeights[index];
 
@@ -44,10 +44,10 @@ export default () => (
     className="list"
     columnCount={1000}
     columnWidth={index => columnWidths[index]}
-    height={300}
+    height={150}
     rowCount={1000}
     rowHeight={index => rowHeights[index]}
-    width={600}
+    width={300}
   >
     {Row}
   </VariableSizeGrid>
@@ -65,6 +65,6 @@ export default () => (
 | columnWidth | 网格中单个列的宽度                                                    | (index: number) => number | -      |
 | rowCount    | 网格中的行数                                                          |          number           | -      |
 | rowHeight   | 网格中单个行的高度                                                    | (index: number) => number | -      |
-| children    | 列表元素                                                              |        `ReactNode`        | -      |
+| children  | 列表元素                                                              |        ({key, rowIndex, columnIndex, data, isScrolling, style}) =>  ReactNode         | -        |
 
 [更多用法](https://react-window.now.sh/#/api/VariableSizeGrid)

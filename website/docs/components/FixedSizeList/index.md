@@ -22,10 +22,10 @@ const Row = ({ index, style }) => (
 export default () => (
   <FixedSizeList
     className="list"
-    height={300}
+    height={150}
     itemCount={1000}
-    itemSize={70}
-    width={600}
+    itemSize={35}
+    width={300}
   >
     {Row}
   </FixedSizeList>
@@ -49,11 +49,11 @@ const Column = ({ index, style }) => (
 export default () => (
   <FixedSizeList
     className="list"
-    height={150}
+    height={75}
     itemCount={1000}
-    itemSize={200}
+    itemSize={100}
     layout="horizontal"
-    width={600}
+    width={300}
   >
     {Column}
   </FixedSizeList>
@@ -70,6 +70,6 @@ export default () => (
 | itemCount | 列表中的项目总数                                                      |           number           | -        |
 | itemSize  | 列表元素的行高或列宽                                                  |           number           | -        |
 | layout    | 布局/方向                                                             | `vertical` \| `horizontal` | vertical |
-| children  | 列表元素                                                              |        `ReactNode`         | -        |
+| children  | 列表元素                                                              |        ({key, index, data, isScrolling, style}) =>  ReactNode         | -        |
 
 [更多用法](https://react-window.now.sh/#/api/FixedSizeList)

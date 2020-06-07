@@ -1,11 +1,11 @@
-import memoizeOne from "memoize-one";
-import { createElement, PureComponent } from "react";
-import { ScrollView, View } from "./component";
-import { cancelTimeout, requestTimeout, TimeoutID } from "./utils/timer";
-import { getScrollbarSize, getRTLOffsetType } from "./utils/domHelpers";
+import memoizeOne from 'memoize-one';
+import { createElement, PureComponent } from 'react';
+import { ScrollView, View } from './component';
+import { cancelTimeout, requestTimeout, TimeoutID } from './utils/timer';
+import { getScrollbarSize, getRTLOffsetType } from './utils/domHelpers';
 
-type Direction = "ltr" | "rtl";
-export type ScrollToAlign = "auto" | "smart" | "center" | "start" | "end";
+type Direction = 'ltr' | 'rtl';
+export type ScrollToAlign = 'auto' | 'smart' | 'center' | 'start' | 'end';
 
 type itemSize = number | ((index: number) => number);
 
@@ -14,12 +14,12 @@ type RenderComponentProps<T> = {
   data: T;
   isScrolling?: boolean;
   rowIndex: number;
-  style: Object;
+  style: React.CSSProperties;
 };
 
 export type RenderComponent<T> = React.ComponentType<RenderComponentProps<T>>;
 
-type ScrollDirection = "forward" | "backward";
+type ScrollDirection = 'forward' | 'backward';
 
 type OnItemsRenderedCallbackParams = {
   overscanColumnStartIndex: number;
@@ -60,7 +60,7 @@ type OnScrollCallback = ({
 }: OnScrollCallbackParams) => void;
 
 type ScrollEvent = React.SyntheticEvent<HTMLDivElement>;
-type ItemStyleCache = { [key: string]: Object };
+type ItemStyleCache = { [index: number]: { [key: string]: any } };
 
 type OuterProps = {
   children: React.ReactNode;
@@ -104,7 +104,7 @@ export type Props<T> = {
   overscanRowsCount?: number; // deprecated
   rowCount: number;
   rowHeight: itemSize;
-  style?: Object;
+  style?: React.CSSProperties;
   useIsScrolling: boolean;
   width: number;
 };
@@ -119,16 +119,8 @@ type State = {
   verticalScrollDirection: ScrollDirection;
 };
 
-type getItemOffset = (
-  props: Props<any>,
-  index: number,
-  instanceProps: any
-) => number;
-type getItemSize = (
-  props: Props<any>,
-  index: number,
-  instanceProps: any
-) => number;
+type getItemOffset = (props: Props<any>, index: number, instanceProps: any) => number;
+type getItemSize = (props: Props<any>, index: number, instanceProps: any) => number;
 type getEstimatedTotalSize = (props: Props<any>, instanceProps: any) => number;
 type GetOffsetForItemAndAlignment = (
   props: Props<any>,
@@ -136,35 +128,30 @@ type GetOffsetForItemAndAlignment = (
   align: ScrollToAlign,
   scrollOffset: number,
   instanceProps: any,
-  scrollbarSize: number
+  scrollbarSize: number,
 ) => number;
-type GetStartIndexForOffset = (
-  props: Props<any>,
-  offset: number,
-  instanceProps: any
-) => number;
+type GetStartIndexForOffset = (props: Props<any>, offset: number, instanceProps: any) => number;
 type GetStopIndexForStartIndex = (
   props: Props<any>,
   startIndex: number,
   scrollOffset: number,
-  instanceProps: any
+  instanceProps: any,
 ) => number;
 type InitInstanceProps = (props: Props<any>, instance: any) => any;
 type ValidateProps = (props: Props<any>) => void;
 
 const IS_SCROLLING_DEBOUNCE_INTERVAL = 150;
 
-const defaultItemKey = ({ columnIndex, data, rowIndex }: any) =>
-  `${rowIndex}:${columnIndex}`;
+const defaultItemKey = ({ columnIndex, data, rowIndex }: any) => `${rowIndex}:${columnIndex}`;
 
 // In DEV mode, this Set helps us only log a warning once per component instance.
 // This avoids spamming the console every time a render happens.
 let devWarningsOverscanCount: any = null;
 let devWarningsOverscanRowsColumnsCount: any = null;
 let devWarningsTagName: any = null;
-// @ts-ignore
-if (process.env.NODE_ENV !== "production") {
-  if (typeof window !== "undefined" && typeof window.WeakSet !== "undefined") {
+
+if (process.env.NODE_ENV !== 'production') {
+  if (typeof window !== 'undefined' && typeof window.WeakSet !== 'undefined') {
     devWarningsOverscanCount = new WeakSet();
     devWarningsOverscanRowsColumnsCount = new WeakSet();
     devWarningsTagName = new WeakSet();
@@ -209,24 +196,19 @@ export default function createGridComponent({
     _resetIsScrollingTimeoutId: TimeoutID | null = null;
     _outerRef?: HTMLDivElement;
     static defaultProps = {
-      direction: "ltr",
+      direction: 'ltr',
       itemData: undefined,
       useIsScrolling: false,
     };
     state: State = {
       instance: this,
       isScrolling: false,
-      horizontalScrollDirection: "forward",
+      horizontalScrollDirection: 'forward',
       scrollLeft:
-        typeof this.props.initialScrollLeft === "number"
-          ? this.props.initialScrollLeft
-          : 0,
-      scrollTop:
-        typeof this.props.initialScrollTop === "number"
-          ? this.props.initialScrollTop
-          : 0,
+        typeof this.props.initialScrollLeft === 'number' ? this.props.initialScrollLeft : 0,
+      scrollTop: typeof this.props.initialScrollTop === 'number' ? this.props.initialScrollTop : 0,
       scrollUpdateWasRequested: false,
-      verticalScrollDirection: "forward",
+      verticalScrollDirection: 'forward',
     };
     // Always use explicit constructor for React components.
     // It produces less code after transpilation. (#26)
@@ -234,53 +216,39 @@ export default function createGridComponent({
     constructor(props: Props<T>) {
       super(props);
     }
-    static getDerivedStateFromProps(
-      nextProps: Props<any>,
-      prevState: State
-    ): null {
+    static getDerivedStateFromProps(nextProps: Props<any>, prevState: State): null {
       validateSharedProps(nextProps, prevState);
       validateProps(nextProps);
       return null;
     }
-    scrollTo({
-      scrollLeft,
-      scrollTop,
-    }: {
-      scrollLeft: number;
-      scrollTop: number;
-    }): void {
+    scrollTo({ scrollLeft, scrollTop }: { scrollLeft: number; scrollTop: number }): void {
       if (scrollLeft !== undefined) {
         scrollLeft = Math.max(0, scrollLeft);
       }
       if (scrollTop !== undefined) {
         scrollTop = Math.max(0, scrollTop);
       }
-      this.setState((prevState) => {
+      this.setState(prevState => {
         if (scrollLeft === undefined) {
           scrollLeft = prevState.scrollLeft;
         }
         if (scrollTop === undefined) {
           scrollTop = prevState.scrollTop;
         }
-        if (
-          prevState.scrollLeft === scrollLeft &&
-          prevState.scrollTop === scrollTop
-        ) {
+        if (prevState.scrollLeft === scrollLeft && prevState.scrollTop === scrollTop) {
           return null;
         }
         return {
-          horizontalScrollDirection:
-            prevState.scrollLeft < scrollLeft ? "forward" : "backward",
+          horizontalScrollDirection: prevState.scrollLeft < scrollLeft ? 'forward' : 'backward',
           scrollLeft: scrollLeft,
           scrollTop: scrollTop,
           scrollUpdateWasRequested: true,
-          verticalScrollDirection:
-            prevState.scrollTop < scrollTop ? "forward" : "backward",
+          verticalScrollDirection: prevState.scrollTop < scrollTop ? 'forward' : 'backward',
         };
       }, this._resetIsScrollingDebounced);
     }
     scrollToItem({
-      align = "auto",
+      align = 'auto',
       columnIndex,
       rowIndex,
     }: {
@@ -297,21 +265,13 @@ export default function createGridComponent({
       if (rowIndex !== undefined) {
         rowIndex = Math.max(0, Math.min(rowIndex, rowCount - 1));
       }
-      const estimatedTotalHeight = getEstimatedTotalHeight(
-        this.props,
-        this._instanceProps
-      );
-      const estimatedTotalWidth = getEstimatedTotalWidth(
-        this.props,
-        this._instanceProps
-      );
+      const estimatedTotalHeight = getEstimatedTotalHeight(this.props, this._instanceProps);
+      const estimatedTotalWidth = getEstimatedTotalWidth(this.props, this._instanceProps);
       // The scrollbar size should be considered when scrolling an item into view,
       // to ensure it's fully visible.
       // But we only need to account for its size when it's actually visible.
-      const horizontalScrollbarSize =
-        estimatedTotalWidth > width ? scrollbarSize : 0;
-      const verticalScrollbarSize =
-        estimatedTotalHeight > height ? scrollbarSize : 0;
+      const horizontalScrollbarSize = estimatedTotalWidth > width ? scrollbarSize : 0;
+      const verticalScrollbarSize = estimatedTotalHeight > height ? scrollbarSize : 0;
       this.scrollTo({
         scrollLeft:
           columnIndex !== undefined
@@ -321,7 +281,7 @@ export default function createGridComponent({
                 align,
                 scrollLeft,
                 this._instanceProps,
-                verticalScrollbarSize
+                verticalScrollbarSize,
               )
             : scrollLeft,
         scrollTop:
@@ -332,7 +292,7 @@ export default function createGridComponent({
                 align,
                 scrollTop,
                 this._instanceProps,
-                horizontalScrollbarSize
+                horizontalScrollbarSize,
               )
             : scrollTop,
       });
@@ -341,10 +301,10 @@ export default function createGridComponent({
       const { initialScrollLeft, initialScrollTop } = this.props;
       if (this._outerRef != null) {
         const outerRef = this._outerRef as HTMLElement;
-        if (typeof initialScrollLeft === "number") {
+        if (typeof initialScrollLeft === 'number') {
           outerRef.scrollLeft = initialScrollLeft;
         }
-        if (typeof initialScrollTop === "number") {
+        if (typeof initialScrollTop === 'number') {
           outerRef.scrollTop = initialScrollTop;
         }
       }
@@ -358,12 +318,12 @@ export default function createGridComponent({
         // This is not the case for all browsers though (e.g. Chrome reports values as positive, measured relative to the left).
         // So we need to determine which browser behavior we're dealing with, and mimic it.
         const outerRef = this._outerRef as HTMLElement;
-        if (direction === "rtl") {
+        if (direction === 'rtl') {
           switch (getRTLOffsetType()) {
-            case "negative":
+            case 'negative':
               outerRef.scrollLeft = -scrollLeft;
               break;
-            case "positive-ascending":
+            case 'positive-ascending':
               outerRef.scrollLeft = scrollLeft;
               break;
             default:
@@ -403,23 +363,12 @@ export default function createGridComponent({
         width,
       } = this.props;
       const { isScrolling } = this.state;
-      const [
-        columnStartIndex,
-        columnStopIndex,
-      ] = this._getHorizontalRangeToRender();
+      const [columnStartIndex, columnStopIndex] = this._getHorizontalRangeToRender();
       const [rowStartIndex, rowStopIndex] = this._getVerticalRangeToRender();
       const items = [];
       if (columnCount > 0 && rowCount) {
-        for (
-          let rowIndex = rowStartIndex;
-          rowIndex <= rowStopIndex;
-          rowIndex++
-        ) {
-          for (
-            let columnIndex = columnStartIndex;
-            columnIndex <= columnStopIndex;
-            columnIndex++
-          ) {
+        for (let rowIndex = rowStartIndex; rowIndex <= rowStopIndex; rowIndex++) {
+          for (let columnIndex = columnStartIndex; columnIndex <= columnStopIndex; columnIndex++) {
             items.push(
               createElement(children, {
                 columnIndex,
@@ -428,21 +377,15 @@ export default function createGridComponent({
                 key: itemKey({ columnIndex, data: itemData, rowIndex }),
                 rowIndex,
                 style: this._getItemStyle(rowIndex, columnIndex),
-              })
+              }),
             );
           }
         }
       }
       // Read this value AFTER items have been created,
       // So their actual sizes (if variable) are taken into consideration.
-      const estimatedTotalHeight = getEstimatedTotalHeight(
-        this.props,
-        this._instanceProps
-      );
-      const estimatedTotalWidth = getEstimatedTotalWidth(
-        this.props,
-        this._instanceProps
-      );
+      const estimatedTotalHeight = getEstimatedTotalHeight(this.props, this._instanceProps);
+      const estimatedTotalWidth = getEstimatedTotalWidth(this.props, this._instanceProps);
       return createElement(
         (outerElementType || outerTagName || ScrollView) as any,
         {
@@ -451,12 +394,12 @@ export default function createGridComponent({
           ref: this._outerRefSetter,
           isGrid: true,
           style: {
-            position: "relative",
+            position: 'relative',
             height,
             width,
-            overflow: "auto",
-            WebkitOverflowScrolling: "touch",
-            willChange: "transform",
+            overflow: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            willChange: 'transform',
             direction,
             ...style,
           },
@@ -465,11 +408,11 @@ export default function createGridComponent({
           children: items,
           ref: innerRef,
           style: {
-            height: estimatedTotalHeight,
-            pointerEvents: isScrolling ? "none" : undefined,
-            width: estimatedTotalWidth + "PX",
+            height: estimatedTotalHeight + 'PX',
+            pointerEvents: isScrolling ? 'none' : undefined,
+            width: estimatedTotalWidth + 'PX',
           },
-        })
+        }),
       );
     }
 
@@ -482,7 +425,7 @@ export default function createGridComponent({
         visibleColumnStartIndex: number,
         visibleColumnStopIndex: number,
         visibleRowStartIndex: number,
-        visibleRowStopIndex: number
+        visibleRowStopIndex: number,
       ): void =>
         (this.props.onItemsRendered as OnItemsRenderedCallback)({
           overscanColumnStartIndex,
@@ -493,7 +436,7 @@ export default function createGridComponent({
           visibleColumnStopIndex,
           visibleRowStartIndex,
           visibleRowStopIndex,
-        })
+        }),
     );
 
     _callOnScroll = memoizeOne(
@@ -502,7 +445,7 @@ export default function createGridComponent({
         scrollTop: number,
         horizontalScrollDirection: ScrollDirection,
         verticalScrollDirection: ScrollDirection,
-        scrollUpdateWasRequested: boolean
+        scrollUpdateWasRequested: boolean,
       ): void =>
         (this.props.onScroll as OnScrollCallback)({
           horizontalScrollDirection,
@@ -510,11 +453,11 @@ export default function createGridComponent({
           scrollTop,
           verticalScrollDirection,
           scrollUpdateWasRequested,
-        })
+        }),
     );
     _callPropsCallbacks() {
       const { columnCount, onItemsRendered, onScroll, rowCount } = this.props;
-      if (typeof onItemsRendered === "function") {
+      if (typeof onItemsRendered === 'function') {
         if (columnCount > 0 && rowCount > 0) {
           const [
             overscanColumnStartIndex,
@@ -536,11 +479,11 @@ export default function createGridComponent({
             visibleColumnStartIndex,
             visibleColumnStopIndex,
             visibleRowStartIndex,
-            visibleRowStopIndex
+            visibleRowStopIndex,
           );
         }
       }
-      if (typeof onScroll === "function") {
+      if (typeof onScroll === 'function') {
         const {
           horizontalScrollDirection,
           scrollLeft,
@@ -553,7 +496,7 @@ export default function createGridComponent({
           scrollTop,
           horizontalScrollDirection,
           verticalScrollDirection,
-          scrollUpdateWasRequested
+          scrollUpdateWasRequested,
         );
       }
     }
@@ -561,40 +504,32 @@ export default function createGridComponent({
     // So that pure component sCU will prevent re-renders.
     // We maintain this cache, and pass a style prop rather than index,
     // So that List can clear cached styles and force item re-render if necessary.
-    _getItemStyle = (rowIndex: number, columnIndex: number): Object => {
+    _getItemStyle = (rowIndex: number, columnIndex: number): React.CSSProperties => {
       const { columnWidth, direction, rowHeight } = this.props;
       const itemStyleCache = this._getItemStyleCache(
         shouldResetStyleCacheOnItemSizeChange && columnWidth,
         shouldResetStyleCacheOnItemSizeChange && direction,
-        shouldResetStyleCacheOnItemSizeChange && rowHeight
+        shouldResetStyleCacheOnItemSizeChange && rowHeight,
       );
       const key = `${rowIndex}:${columnIndex}`;
       let style;
       if (itemStyleCache.hasOwnProperty(key)) {
         style = itemStyleCache[key];
       } else {
-        const offset = getColumnOffset(
-          this.props,
-          columnIndex,
-          this._instanceProps
-        );
-        const isRtl = direction === "rtl";
+        const offset = getColumnOffset(this.props, columnIndex, this._instanceProps);
+        const isRtl = direction === 'rtl';
         itemStyleCache[key] = style = {
-          position: "absolute",
-          left: isRtl ? undefined : offset + "PX",
-          right: isRtl ? offset + "PX" : undefined,
-          top: getRowOffset(this.props, rowIndex, this._instanceProps) + "PX",
-          height:
-            getRowHeight(this.props, rowIndex, this._instanceProps) + "PX",
-          width:
-            getColumnWidth(this.props, columnIndex, this._instanceProps) + "PX",
+          position: 'absolute',
+          left: isRtl ? undefined : offset + 'PX',
+          right: isRtl ? offset + 'PX' : undefined,
+          top: getRowOffset(this.props, rowIndex, this._instanceProps) + 'PX',
+          height: getRowHeight(this.props, rowIndex, this._instanceProps) + 'PX',
+          width: getColumnWidth(this.props, columnIndex, this._instanceProps) + 'PX',
         };
       }
       return style;
     };
-    _getItemStyleCache = memoizeOne(
-      (_: any, __?: any, ___?: any): ItemStyleCache => ({})
-    );
+    _getItemStyleCache = memoizeOne((_: any, __?: any, ___?: any): ItemStyleCache => ({}));
     _getHorizontalRangeToRender(): [number, number, number, number] {
       const {
         columnCount,
@@ -609,25 +544,21 @@ export default function createGridComponent({
       if (columnCount === 0 || rowCount === 0) {
         return [0, 0, 0, 0];
       }
-      const startIndex = getColumnStartIndexForOffset(
-        this.props,
-        scrollLeft,
-        this._instanceProps
-      );
+      const startIndex = getColumnStartIndexForOffset(this.props, scrollLeft, this._instanceProps);
       const stopIndex = getColumnStopIndexForStartIndex(
         this.props,
         startIndex,
         scrollLeft,
-        this._instanceProps
+        this._instanceProps,
       );
       // Overscan by one item in each direction so that tab/focus works.
       // If there isn't at least one extra item, tab loops back around.
       const overscanBackward =
-        !isScrolling || horizontalScrollDirection === "backward"
+        !isScrolling || horizontalScrollDirection === 'backward'
           ? Math.max(1, overscanCountResolved)
           : 1;
       const overscanForward =
-        !isScrolling || horizontalScrollDirection === "forward"
+        !isScrolling || horizontalScrollDirection === 'forward'
           ? Math.max(1, overscanCountResolved)
           : 1;
       return [
@@ -651,25 +582,21 @@ export default function createGridComponent({
       if (columnCount === 0 || rowCount === 0) {
         return [0, 0, 0, 0];
       }
-      const startIndex = getRowStartIndexForOffset(
-        this.props,
-        scrollTop,
-        this._instanceProps
-      );
+      const startIndex = getRowStartIndexForOffset(this.props, scrollTop, this._instanceProps);
       const stopIndex = getRowStopIndexForStartIndex(
         this.props,
         startIndex,
         scrollTop,
-        this._instanceProps
+        this._instanceProps,
       );
       // Overscan by one item in each direction so that tab/focus works.
       // If there isn't at least one extra item, tab loops back around.
       const overscanBackward =
-        !isScrolling || verticalScrollDirection === "backward"
+        !isScrolling || verticalScrollDirection === 'backward'
           ? Math.max(1, overscanCountResolved)
           : 1;
       const overscanForward =
-        !isScrolling || verticalScrollDirection === "forward"
+        !isScrolling || verticalScrollDirection === 'forward'
           ? Math.max(1, overscanCountResolved)
           : 1;
       return [
@@ -688,11 +615,8 @@ export default function createGridComponent({
         scrollHeight,
         scrollWidth,
       } = event.currentTarget;
-      this.setState((prevState) => {
-        if (
-          prevState.scrollLeft === scrollLeft &&
-          prevState.scrollTop === scrollTop
-        ) {
+      this.setState(prevState => {
+        if (prevState.scrollLeft === scrollLeft && prevState.scrollTop === scrollTop) {
           // Scroll position may have been updated by cDM/cDU,
           // In which case we don't need to trigger another render,
           // And we don't want to update state.isScrolling.
@@ -704,12 +628,12 @@ export default function createGridComponent({
         // It's also easier for this component if we convert offsets to the same format as they would be in for ltr.
         // So the simplest solution is to determine which browser behavior we're dealing with, and convert based on it.
         let calculatedScrollLeft = scrollLeft;
-        if (direction === "rtl") {
+        if (direction === 'rtl') {
           switch (getRTLOffsetType()) {
-            case "negative":
+            case 'negative':
               calculatedScrollLeft = -scrollLeft;
               break;
-            case "positive-descending":
+            case 'positive-descending':
               calculatedScrollLeft = scrollWidth - clientWidth - scrollLeft;
               break;
           }
@@ -717,20 +641,15 @@ export default function createGridComponent({
         // Prevent Safari's elastic scrolling from causing visual shaking when scrolling past bounds.
         calculatedScrollLeft = Math.max(
           0,
-          Math.min(calculatedScrollLeft, scrollWidth - clientWidth)
+          Math.min(calculatedScrollLeft, scrollWidth - clientWidth),
         );
-        const calculatedScrollTop = Math.max(
-          0,
-          Math.min(scrollTop, scrollHeight - clientHeight)
-        );
+        const calculatedScrollTop = Math.max(0, Math.min(scrollTop, scrollHeight - clientHeight));
         return {
           isScrolling: true,
-          horizontalScrollDirection:
-            prevState.scrollLeft < scrollLeft ? "forward" : "backward",
+          horizontalScrollDirection: prevState.scrollLeft < scrollLeft ? 'forward' : 'backward',
           scrollLeft: calculatedScrollLeft,
           scrollTop: calculatedScrollTop,
-          verticalScrollDirection:
-            prevState.scrollTop < scrollTop ? "forward" : "backward",
+          verticalScrollDirection: prevState.scrollTop < scrollTop ? 'forward' : 'backward',
           scrollUpdateWasRequested: false,
         };
       }, this._resetIsScrollingDebounced);
@@ -738,12 +657,12 @@ export default function createGridComponent({
     _outerRefSetter = (ref: any): void => {
       const { outerRef } = this.props;
       this._outerRef = ref as HTMLDivElement;
-      if (typeof outerRef === "function") {
+      if (typeof outerRef === 'function') {
         outerRef(ref);
       } else if (
         outerRef != null &&
-        typeof outerRef === "object" &&
-        outerRef.hasOwnProperty("current")
+        typeof outerRef === 'object' &&
+        outerRef.hasOwnProperty('current')
       ) {
         outerRef.current = ref;
       }
@@ -754,7 +673,7 @@ export default function createGridComponent({
       }
       this._resetIsScrollingTimeoutId = requestTimeout(
         this._resetIsScrolling,
-        IS_SCROLLING_DEBOUNCE_INTERVAL
+        IS_SCROLLING_DEBOUNCE_INTERVAL,
       );
     };
     _resetIsScrolling = () => {
@@ -780,32 +699,28 @@ const validateSharedProps = (
     overscanRowsCount,
     width,
   }: Props<any>,
-  { instance }: State
+  { instance }: State,
 ): void => {
-  // @ts-ignore
-  if (process.env.NODE_ENV !== "production") {
-    if (typeof overscanCount === "number") {
+  if (process.env.NODE_ENV !== 'production') {
+    if (typeof overscanCount === 'number') {
       if (devWarningsOverscanCount && !devWarningsOverscanCount.has(instance)) {
         devWarningsOverscanCount.add(instance);
         console.warn(
-          "The overscanCount prop has been deprecated. " +
-            "Please use the overscanColumnCount and overscanRowCount props instead."
+          'The overscanCount prop has been deprecated. ' +
+            'Please use the overscanColumnCount and overscanRowCount props instead.',
         );
       }
     }
 
-    if (
-      typeof overscanColumnsCount === "number" ||
-      typeof overscanRowsCount === "number"
-    ) {
+    if (typeof overscanColumnsCount === 'number' || typeof overscanRowsCount === 'number') {
       if (
         devWarningsOverscanRowsColumnsCount &&
         !devWarningsOverscanRowsColumnsCount.has(instance)
       ) {
         devWarningsOverscanRowsColumnsCount.add(instance);
         console.warn(
-          "The overscanColumnsCount and overscanRowsCount props have been deprecated. " +
-            "Please use the overscanColumnCount and overscanRowCount props instead."
+          'The overscanColumnsCount and overscanRowsCount props have been deprecated. ' +
+            'Please use the overscanColumnCount and overscanRowCount props instead.',
         );
       }
     }
@@ -814,8 +729,8 @@ const validateSharedProps = (
       if (devWarningsTagName && !devWarningsTagName.has(instance)) {
         devWarningsTagName.add(instance);
         console.warn(
-          "The innerTagName and outerTagName props have been deprecated. " +
-            "Please use the innerElementType and outerElementType props instead."
+          'The innerTagName and outerTagName props have been deprecated. ' +
+            'Please use the innerElementType and outerElementType props instead.',
         );
       }
     }
@@ -823,37 +738,37 @@ const validateSharedProps = (
     if (children == null) {
       throw Error(
         'An invalid "children" prop has been specified. ' +
-          "Value should be a React component. " +
-          `"${children === null ? "null" : typeof children}" was specified.`
+          'Value should be a React component. ' +
+          `"${children === null ? 'null' : typeof children}" was specified.`,
       );
     }
 
     switch (direction) {
-      case "ltr":
-      case "rtl":
+      case 'ltr':
+      case 'rtl':
         // Valid values
         break;
       default:
         throw Error(
           'An invalid "direction" prop has been specified. ' +
             'Value should be either "ltr" or "rtl". ' +
-            `"${direction}" was specified.`
+            `"${direction}" was specified.`,
         );
     }
 
-    if (typeof width !== "number") {
+    if (typeof width !== 'number') {
       throw Error(
         'An invalid "width" prop has been specified. ' +
-          "Grids must specify a number for width. " +
-          `"${width === null ? "null" : typeof width}" was specified.`
+          'Grids must specify a number for width. ' +
+          `"${width === null ? 'null' : typeof width}" was specified.`,
       );
     }
 
-    if (typeof height !== "number") {
+    if (typeof height !== 'number') {
       throw Error(
         'An invalid "height" prop has been specified. ' +
-          "Grids must specify a number for height. " +
-          `"${height === null ? "null" : typeof height}" was specified.`
+          'Grids must specify a number for height. ' +
+          `"${height === null ? 'null' : typeof height}" was specified.`,
       );
     }
   }
