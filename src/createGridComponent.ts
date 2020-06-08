@@ -395,8 +395,8 @@ export default function createGridComponent({
           isGrid: true,
           style: {
             position: 'relative',
-            height,
-            width,
+            height: height + 'PX',
+            width: width + 'PX',
             overflow: 'auto',
             WebkitOverflowScrolling: 'touch',
             willChange: 'transform',

@@ -4,7 +4,7 @@
 
 remax-virtual-list 完全借鉴了 [React Window](https://github.com/bvaughn/react-window) 的实现，因此基本沿用了 React Window 的用法。
 
-![npm dev dependency version](https://img.shields.io/npm/dependency-version/remax-virtual-list/dev/remax?style=for-the-badge)&nbsp;![NPM license](https://img.shields.io/badge/license-mit-red.svg?style=for-the-badge)
+![npm](https://img.shields.io/npm/v/remax-virtual-list?style=for-the-badge)&nbsp;![npm dev dependency version](https://img.shields.io/npm/dependency-version/remax-virtual-list/dev/remax?style=for-the-badge)&nbsp;![NPM license](https://img.shields.io/badge/license-mit-red.svg?style=for-the-badge)
 
 ### 安装
 

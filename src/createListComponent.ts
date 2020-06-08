@@ -462,6 +462,7 @@ export default function createListComponent({
         }
         // Prevent Safari's elastic scrolling from causing visual shaking when scrolling past bounds.
         scrollOffset = Math.max(0, Math.min(scrollOffset, scrollWidth - clientWidth));
+
         return {
           isScrolling: true,
           scrollDirection: prevState.scrollOffset < scrollLeft ? 'forward' : 'backward',

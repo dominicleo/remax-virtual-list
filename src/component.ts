@@ -21,8 +21,8 @@ export const ScrollView: React.FC<any> = React.forwardRef((props, ref) => {
                 ...event.detail,
                 ...(isGrid
                   ? {
-                      clientWidth: style?.width,
-                      clientHeight: style?.height,
+                      clientWidth: parseFloat(style?.width),
+                      clientHeight: parseFloat(style?.height),
                     }
                   : {
                       clientWidth: isHorizontal ? parseFloat(style?.width) : style?.width,
