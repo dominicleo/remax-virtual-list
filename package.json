@@ -4,6 +4,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
+    "watch": "tsc -w",
     "build": "rimraf lib && tsc",
     "release": "standard-version",
     "lint": "eslint \"src/**/*.{ts,tsx}\" --fix"
@@ -40,11 +41,12 @@
     "eslint-plugin-react": "^7.20.0",
     "husky": "^3.0.5",
     "lint-staged": "^10.2.9",
+    "miniprogram-api-typings": "^2.11.0-1",
     "prettier": "^1.18.2",
     "react": "^16.13.1",
     "remax": ">=2.4.1",
     "rimraf": "^3.0.0",
-    "standard-version": "^8.0.1",
+    "standard-version": "^7.0.0",
     "typescript": "^3.6.3"
   },
   "husky": {
