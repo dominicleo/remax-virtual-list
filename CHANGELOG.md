@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 1.1.0 (2020-12-10)
+
+
+### Features
+
+* 新增 containerProps 属性 ([06adca2](https://github.com/dominicleo/remax-virtual-list/commit/06adca23ce8de43d109792d3616604bf409a7bd6))
+
+### Bug Fixes
+
+* 修复 FixedSizeList 高度单位转换 ([e7d74df](https://github.com/dominicleo/remax-virtual-list/commit/e7d74df407f5105826836e81ccace4e639e32e36))
+* 修复类组件 hooks 报错 ([67814d3](https://github.com/dominicleo/remax-virtual-list/commit/67814d3b25db6a70828b1217beee10824db408de))
+* 修复列表组件宽高度单位 ([a562a4e](https://github.com/dominicleo/remax-virtual-list/commit/a562a4e7ecbb1d536ca80369ec7fe0e6a48afd20))
+
 ### 1.0.1 (2020-06-08)
 
 
