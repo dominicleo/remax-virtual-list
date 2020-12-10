@@ -27,7 +27,7 @@
   },
   "peerDependencies": {
     "react": "^16.13.1",
-    "remax": ">=2.4.1"
+    "remax": "^2.10.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",

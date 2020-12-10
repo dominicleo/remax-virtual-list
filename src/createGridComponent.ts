@@ -1,8 +1,9 @@
 import memoizeOne from 'memoize-one';
 import { createElement, PureComponent } from 'react';
-import { ScrollView, View } from './component';
+
+import { ScrollView, ScrollViewProps, View } from './component';
+import { getRTLOffsetType, getScrollbarSize } from './utils/domHelpers';
 import { cancelTimeout, requestTimeout, TimeoutID } from './utils/timer';
-import { getScrollbarSize, getRTLOffsetType } from './utils/domHelpers';
 
 type Direction = 'ltr' | 'rtl';
 export type ScrollToAlign = 'auto' | 'smart' | 'center' | 'start' | 'end';
@@ -107,6 +108,7 @@ export type Props<T> = {
   style?: React.CSSProperties;
   useIsScrolling: boolean;
   width: number;
+  containerProps?: ScrollViewProps;
 };
 
 type State = {
@@ -361,6 +363,7 @@ export default function createGridComponent({
         style,
         useIsScrolling,
         width,
+        containerProps = {},
       } = this.props;
       const { isScrolling } = this.state;
       const [columnStartIndex, columnStopIndex] = this._getHorizontalRangeToRender();
@@ -389,6 +392,7 @@ export default function createGridComponent({
       return createElement(
         (outerElementType || outerTagName || ScrollView) as any,
         {
+          ...containerProps,
           className,
           onScroll: this._onScroll,
           ref: this._outerRefSetter,

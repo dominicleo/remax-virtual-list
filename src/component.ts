@@ -1,14 +1,20 @@
 import React from 'react';
+import { ScrollViewProps as AliScrollViewProps } from 'remax/ali';
 import { View } from 'remax/one';
+import { ScrollViewProps as ToutiaoScrollViewProps } from 'remax/toutiao';
+import { ScrollViewProps as WechatScrollViewProps } from 'remax/wechat';
 
 export const isNativePlatform = ['ali', 'wechat', 'toutiao'].includes(
   process.env.REMAX_PLATFORM as string,
 );
 
+export type ScrollViewProps = AliScrollViewProps | WechatScrollViewProps | ToutiaoScrollViewProps;
+
 export { View };
 
-export const ScrollView: React.FC<any> = React.forwardRef((props, ref) => {
+export const ScrollView: React.ForwardRefExoticComponent<any> = React.forwardRef((props, ref) => {
   const { isGrid, layout, style, onScroll, ...rest } = props;
+
   function handleScroll(event: any) {
     if (typeof onScroll === 'function') {
       const isHorizontal = layout === 'horizontal';

@@ -1,10 +1,9 @@
 import memoizeOne from 'memoize-one';
 import { createElement, PureComponent } from 'react';
-import { ScrollView, View } from './component';
-import { cancelTimeout, requestTimeout } from './utils/timer';
-import { getRTLOffsetType } from './utils/domHelpers';
 
-import { TimeoutID } from './utils/timer';
+import { ScrollView, ScrollViewProps, View } from './component';
+import { getRTLOffsetType } from './utils/domHelpers';
+import { cancelTimeout, requestTimeout, TimeoutID } from './utils/timer';
 
 export type ScrollToAlign = 'auto' | 'smart' | 'center' | 'start' | 'end';
 
@@ -91,6 +90,7 @@ export type Props<T> = {
   style?: React.CSSProperties;
   useIsScrolling: boolean;
   width: number | string;
+  containerProps?: ScrollViewProps;
 };
 
 type State = {
@@ -272,6 +272,7 @@ export default function createListComponent({
         style,
         useIsScrolling,
         width,
+        containerProps = {},
       } = this.props;
       const { isScrolling } = this.state;
       const isHorizontal = layout === 'horizontal';
@@ -298,6 +299,7 @@ export default function createListComponent({
       return createElement(
         (outerElementType || outerTagName || ScrollView) as any,
         {
+          ...containerProps,
           className,
           onScroll,
           ref: this._outerRefSetter,
